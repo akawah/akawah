@@ -35,15 +35,11 @@
             border-bottom: 1px dotted #777;
             text-decoration: none;
         }
-        
         .babka{
             position: absolute;
             top: -60px;
             opacity: 0.45;
             transition: transform 8s linear;
-        }
-        .babka.move{
-            transform: translateY(1130px);
         }
         .text-wrap{
             padding: 10px;
@@ -96,29 +92,51 @@
     </div>
     <script>
         "use strict";
+        let wrap = document.querySelector('.wrap');
         let babka = document.querySelector('.babka');
-        let duration = parseInt(document.querySelector('.wrap').clientHeight / 82);
+        let screenHeight;
+        let duration;
+        
         window.onload = function() {
-            addMove(duration);
-        }
+            init();
+        };
+        
+        window.onresize = function() {
+            init();
+        };
+        
         babka.addEventListener('transitionend', function() {
+            newStart();
+        }, false);
+        
+        let init = () => {
+            screenHeight = parseInt(wrap.clientHeight);
+            duration = screenHeight / 82; // speed
+            newStart();
+        };
+        
+        let newStart = () => {
             delMove();
             setTimeout(() => {
                 addMove(duration);
             },0);
-        }, false);
+        };
+        
         let addMove = (d) => {
+            babka.style.transform = 'translateY(' + parseInt(screenHeight + 120) + 'px)';
             babka.style.transition = 'transform ' + d + 's linear';
             babka.querySelector('img').style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
             babka.style.left = Math.random() * 256 + 'px';
-            babka.classList.add('move');
-        }
+        };
+        
         let delMove = () => {
             babka.style.transition = 'unset';
-            babka.classList.remove('move');
-        }
+            babka.style.transform = 'translateY(0)';
+        };
+        
         let textWrap = document.querySelector('.text-wrap');
         let txt = textWrap.querySelector('.text');
+        
         let text = () => {
             if (txt.classList.contains('view')) {
                 txt.classList.remove('view');
